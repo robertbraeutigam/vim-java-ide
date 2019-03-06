@@ -26,28 +26,28 @@
       <plugins>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.2.1</version>
+            <executions>
+               <execution>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>shade</goal>
+                  </goals>
+                  <configuration>
+                     <createDependencyReducedPom>false</createDependencyReducedPom>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.1</version>
             <configuration>
                <source>1.8</source>
                <target>1.8</target>
                <compilerArgument>-Xlint:unchecked,deprecation</compilerArgument>
-            </configuration>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <version>2.5</version>
-            <configuration>
-               <archive>
-                  <manifest>
-                     <addClasspath>true</addClasspath>
-                  </manifest>
-                  <manifestEntries>
-                     <Vim-Exported-Packages>com.vanillasource.vim.changes</Vim-Exported-Packages>
-                     <Vim-Plugin-Class>com.vanillasource.vim.changes.impl.Plugin</Vim-Plugin-Class>
-                  </manifestEntries>
-               </archive>
             </configuration>
          </plugin>
          <plugin>

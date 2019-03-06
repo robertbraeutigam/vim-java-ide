@@ -6,13 +6,13 @@
 
 package com.vanillasource.vim.engine;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Command to be executed from the Vim side. Commands are
  * registered by plugins.
  */
 public interface Command {
-   VimScript execute(List<String> parameter);
+   VimScript execute(Map<String, String> parameters);
 }
 

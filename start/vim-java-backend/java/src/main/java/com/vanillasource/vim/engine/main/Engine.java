@@ -11,6 +11,8 @@ import com.vanillasource.vim.engine.PluginContext;
 import com.vanillasource.vim.engine.Plugin;
 import com.vanillasource.vim.engine.script.Message;
 import com.vanillasource.vim.engine.VimScript;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonValue;
 import java.lang.reflect.Method;
 import java.util.ServiceLoader;
 import java.util.List;
@@ -18,9 +20,12 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
+import static java.util.Arrays.asList;
+import java.io.Reader;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -56,6 +61,7 @@ public final class Engine implements PluginContext {
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public <V> V get(ContextKey<V> key) {
       try {
          synchronized (objects) {
@@ -110,16 +116,19 @@ public final class Engine implements PluginContext {
          Socket socket = serverSocket.accept();
          try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String command = reader.readLine();
-            List<String> parameters = new LinkedList<>();
-            String line;
-            while ( !"".equals(line = reader.readLine()) ) {
-               parameters.add(line);
-            }
-            LOGGER.info("executing command: "+command+", parameters: "+parameters);
+            String inputLine = reader.readLine();
+            LOGGER.info("received "+inputLine);
+            JsonValue value = Json.parse(inputLine);
+            long requestId = value.asArray().get(0).asLong();
+            String[] parts = value.asArray().get(1).asString().split(",");
+            String command = parts[0];
+            Map<String, String> parameters = asList(parts).subList(1, parts.length).stream()
+               .map(s -> s.split(":"))
+               .collect(Collectors.toMap(p -> p[0], p -> p[1]));
+            LOGGER.info("executing command  "+command+" with "+parameters);
             VimScript response = executeCommand(command, parameters);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            writer.write(response.toScript());
+            writer.write("["+requestId+", \""+response.toScript()+"\"]");
             writer.close();
             reader.close();
          } finally {
@@ -130,7 +139,7 @@ public final class Engine implements PluginContext {
       }
    }
 
-   private VimScript executeCommand(String commandString, List<String> parameters) {
+   private VimScript executeCommand(String commandString, Map<String, String> parameters) {
       Command command = commands.get(commandString);
       if ("exit".equals(commandString)) {
          LOGGER.info("exiting...");

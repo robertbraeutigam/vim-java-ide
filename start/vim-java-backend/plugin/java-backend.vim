@@ -23,7 +23,7 @@ let s:script_path = expand('<sfile>:p:h')
 
 function! JavaBackendExec(command, parameters)
    " Assemble input
-   let input = s:toJson(a:command, a:parameters)
+   let input = s:encodeInput(a:command, a:parameters)
    " If channel is not establish, then establish, optionally start the engine
    if !exists('s:backend_channel') || ch_status(s:backend_channel) != "open"
       " Establish channel
@@ -43,13 +43,13 @@ function! JavaBackendExec(command, parameters)
       else
       endif
    endif
-   let output = ch_sendexpr(s:backend_channel, input)
+   let output = ch_evalexpr(s:backend_channel, input)
    " TODO: execute result if script
    echo "Received: ".output
 endfunction
 
 function! JavaBackendExit()
-   return JavaBackendExec("exit", [])
+   return JavaBackendExec("exit", {})
 endfunction
 
 function! s:startBackend()
@@ -79,11 +79,11 @@ function! s:startBackend()
    sleep 3
 endfunction
 
-function! s:toJson(command, parameters)
-   let json = "{\"command\": \"" . a:command . "\", \"parameters\": {"
+function! s:encodeInput(command, parameters)
+   let input = a:command
    for [key, value] in items(a:parameters)
-      let json = json . "\"" . key . "\":\"" . value . "\","
+      let input = input . "," . key . ":" . value
    endfor
-   let json = json . "}}"
-   return json
+   return input
 endfunction
+

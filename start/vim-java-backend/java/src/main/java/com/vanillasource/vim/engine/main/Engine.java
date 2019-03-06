@@ -40,7 +40,7 @@ public final class Engine implements PluginContext {
    private boolean running = true;
 
    public Engine() throws IOException {
-      this.serverSocket = new ServerSocket(7766, 10, InetAddress.getLocalHost());
+      this.serverSocket = new ServerSocket(7766, 10);
       LOGGER.info("vim java backend accepting commands...");
    }
 

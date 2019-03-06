@@ -43,9 +43,7 @@ function! JavaBackendExec(command, parameters)
       else
       endif
    endif
-   let output = ch_evalexpr(s:backend_channel, input)
-   " TODO: execute result if script
-   echo "Received: ".output
+   return ch_evalexpr(s:backend_channel, input)
 endfunction
 
 function! JavaBackendExit()

@@ -27,12 +27,12 @@ function! JavaBackendExec(command, parameters)
    " If channel is not establish, then establish, optionally start the engine
    if !exists('s:backend_channel') || ch_status(s:backend_channel) != "open"
       " Establish channel
-      let s:backend_channel = ch_open("localhost:7766", {"mode":"json"})
+      let s:backend_channel = ch_open("localhost:7766", {"mode":"json", "waittime":"100"})
       " If can not be established, compile and start backend
       if (ch_status(s:backend_channel) != "open")
          call s:startBackend()
          " Try again
-         let s:backend_channel = ch_open("localhost:7766", {"mode":"json"})
+         let s:backend_channel = ch_open("localhost:7766", {"mode":"json", "waittime":"100"})
          " If still not available, abort
          if (ch_status(s:backend_channel) != "open")
             echohl Error
@@ -75,7 +75,8 @@ function! s:startBackend()
    for pluginDir in pluginDirs
       let classpath = classpath . pluginDir . "/target/*:"
    endfor
-   call job_start([ g:java_command, '-classpath', classpath, 'com.vanillasource.vim.engine.impl.Main' ], {"stoponexit": ""})
+   call job_start([ g:java_command, '-classpath', classpath, 'com.vanillasource.vim.engine.main.Main' ], {"stoponexit": ""})
+   sleep 3
 endfunction
 
 function! s:toJson(command, parameters)

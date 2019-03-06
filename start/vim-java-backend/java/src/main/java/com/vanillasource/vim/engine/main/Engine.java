@@ -92,9 +92,10 @@ public final class Engine implements PluginContext {
       ForkJoinPool pool = new ForkJoinPool();
       plugins.forEach(plugin -> {
          LOGGER.info("loading "+plugin.getClass());
-         plugin.startPlugin(Engine.this);
+         pool.execute(() -> plugin.startPlugin(Engine.this));
       });
       pool.shutdown();
+      LOGGER.info("done loading plugins");
       try {
          if (!pool.awaitTermination(2, TimeUnit.SECONDS)) {
             throw new RuntimeException("could not start bundles, initialization took more than 2 second");

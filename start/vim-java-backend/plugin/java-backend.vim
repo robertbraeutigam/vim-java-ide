@@ -21,6 +21,11 @@ highlight ResponseInfo ctermfg=white
 
 let s:script_path = expand('<sfile>:p:h')
 
+function! JavaBackendEval(command, parameters)
+   let script = JavaBackendExec(a:command, a:parameters)
+   exec script
+endfunction
+
 function! JavaBackendExec(command, parameters)
    " Assemble input
    let input = s:encodeInput(a:command, a:parameters)

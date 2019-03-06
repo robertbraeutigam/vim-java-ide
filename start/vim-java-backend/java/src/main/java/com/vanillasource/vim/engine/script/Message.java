@@ -4,18 +4,18 @@
  * All rights reserved.
  */
 
-package com.vanillasource.vim.engine.response;
+package com.vanillasource.vim.engine.script;
 
-import com.vanillasource.vim.engine.Response;
+import com.vanillasource.vim.engine.VimScript;
 
 /**
  * Displays messages on the vim side as response.
  */
-public class MessageResponse implements Response {
+public class Message implements VimScript {
    private Severity severity;
    private String message;
 
-   public MessageResponse(Severity severity, String message) {
+   public Message(Severity severity, String message) {
       this.severity = severity;
       this.message = message;
    }

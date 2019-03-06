@@ -27,6 +27,17 @@ public interface PluginContext {
    /**
     * Install a command that can be invoked from Vim. All public methods
     * of the given object will be exposed.
+    * @param commandName The name by which to invoke this command from Vim.
     */
-   void registerCommand(Command command);
+   void registerCommand(String commandName, Command command);
+
+   public static final class ContextKey<V> {
+      private ContextKey() {
+      }
+
+      public <V> ContextKey<V> createKey() {
+         return new ContextKey<>();
+      }
+   }
 }
+

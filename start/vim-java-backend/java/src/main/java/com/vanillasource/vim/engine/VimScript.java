@@ -10,7 +10,7 @@ package com.vanillasource.vim.engine;
  * Response from the engine to vim. All responses must be translateable
  * to vim script, and will be run on the vim side.
  */
-public interface Response {
+public interface VimScript {
    String toScript();
 }
 

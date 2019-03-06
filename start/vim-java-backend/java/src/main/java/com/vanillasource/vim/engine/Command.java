@@ -6,10 +6,13 @@
 
 package com.vanillasource.vim.engine;
 
+import java.util.List;
+
 /**
- * Indicator interface for an object that has all its public methods
- * exposed to vim. Note: public methods must have a Response as return value.
+ * Command to be executed from the Vim side. Commands are
+ * registered by plugins.
  */
 public interface Command {
+   VimScript execute(List<String> parameter);
 }
 

@@ -13,6 +13,6 @@ import java.util.Map;
  * registered by plugins.
  */
 public interface Command {
-   VimScript execute(Map<String, String> parameters);
+   String execute(Map<String, String> parameters);
 }
 

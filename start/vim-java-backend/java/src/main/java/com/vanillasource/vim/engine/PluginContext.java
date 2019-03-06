@@ -35,7 +35,7 @@ public interface PluginContext {
       private ContextKey() {
       }
 
-      public <V> ContextKey<V> createKey() {
+      public static <V> ContextKey<V> createKey() {
          return new ContextKey<>();
       }
    }

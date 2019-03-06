@@ -9,8 +9,6 @@ package com.vanillasource.vim.engine.main;
 import com.vanillasource.vim.engine.Command;
 import com.vanillasource.vim.engine.PluginContext;
 import com.vanillasource.vim.engine.Plugin;
-import com.vanillasource.vim.engine.script.Message;
-import com.vanillasource.vim.engine.VimScript;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
 import java.lang.reflect.Method;
@@ -126,9 +124,9 @@ public final class Engine implements PluginContext {
                .map(s -> s.split(":"))
                .collect(Collectors.toMap(p -> p[0], p -> p[1]));
             LOGGER.info("executing command  "+command+" with "+parameters);
-            VimScript response = executeCommand(command, parameters);
+            String response = executeCommand(command, parameters);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            writer.write("["+requestId+", \""+response.toScript()+"\"]");
+            writer.write("["+requestId+", \""+response+"\"]");
             writer.close();
             reader.close();
          } finally {
@@ -139,18 +137,17 @@ public final class Engine implements PluginContext {
       }
    }
 
-   private VimScript executeCommand(String commandString, Map<String, String> parameters) {
+   private String executeCommand(String commandString, Map<String, String> parameters) {
       Command command = commands.get(commandString);
       if ("exit".equals(commandString)) {
          LOGGER.info("exiting...");
          running = false;
-         return new Message(Message.Severity.Info, "Java backend exiting...");
       } else if (command != null) {
          return command.execute(parameters);
       } else {
          LOGGER.warn("did not find command: "+commandString);
-         return new Message(Message.Severity.Error, "Command not found '"+commandString+"'.");
       }
+      return "";
    }
 }
 

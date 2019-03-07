@@ -127,6 +127,7 @@ public final class Engine implements PluginContext {
             LOGGER.info("executing command  "+command+" with "+parameters);
             String response = executeCommand(command, parameters);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            LOGGER.info("sending back: "+response);
             writer.write("["+requestId+", \""+response+"\"]");
             writer.close();
             reader.close();

@@ -40,8 +40,13 @@ function! QuickfixSuggestImport()
             echo "No imports suggested for ".matches[1]
          elseif len(suggestions) == 1
             call JavaAddImport(suggestions[0])
-            exec 'w'
          elseif len(suggestions) > 1
+            call quickmenu#current(11)
+            call quickmenu#reset()
+            for suggestion in suggestions
+               call quickmenu#append(matches[1], 'call JavaAddImport("'.suggestion.'")', suggestion)
+            endfor
+            call quickmenu#bottom(11)
          endif
       endif
    endif
@@ -76,6 +81,9 @@ function! JavaAddImport(fullClassName)
 
    " go back to the old location
    close
+
+   " save to reset quickfixlist
+   exec 'w'
 endfun
 
 function! JavaImpGotoLast()

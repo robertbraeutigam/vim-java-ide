@@ -42,6 +42,7 @@ function! QuickfixSuggestImport()
             call JavaAddImport(suggestions[0])
          elseif len(suggestions) > 1
             call quickmenu#current(11)
+            call quickmenu#header('Select import')
             call quickmenu#reset()
             for suggestion in suggestions
                call quickmenu#append(matches[1], 'call JavaAddImport("'.suggestion.'")', suggestion)

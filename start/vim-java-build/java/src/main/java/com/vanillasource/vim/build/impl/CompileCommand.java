@@ -57,7 +57,7 @@ public class CompileCommand implements Command {
    }
 
    private String escape(String message) {
-      return message.replaceAll("'", "\"");
+      return message.replaceAll("'", "`").replaceAll("\"", "`");
    }
 }
 

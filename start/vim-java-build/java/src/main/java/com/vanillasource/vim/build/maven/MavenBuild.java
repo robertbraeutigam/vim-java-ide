@@ -11,8 +11,12 @@ import com.vanillasource.vim.build.FileMessage;
 import com.vanillasource.vim.build.util.JavacUtils;
 import com.vanillasource.vim.changes.ChangesTracker;
 import com.vanillasource.vim.changes.ChangeEvent;
+import com.vanillasource.vim.build.context.CompilationContext;
 import java.io.*;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.LinkedList;
 import java.util.Collections;
 import static java.util.Arrays.asList;
@@ -20,6 +24,7 @@ import org.apache.log4j.Logger;
 
 public class MavenBuild implements Build {
    private static final Logger logger = Logger.getLogger(MavenBuild.class);
+   private final CompilationContext context;
    private File pomFile;
    private File topDirectory;
    private List<String> compileArgumentList;
@@ -31,7 +36,8 @@ public class MavenBuild implements Build {
    private ChangesTracker changesTracker;
    private String pomListenerId;
 
-   public MavenBuild(ChangesTracker changesTracker, File pomFile, File topDirectory) {
+   public MavenBuild(CompilationContext context, ChangesTracker changesTracker, File pomFile, File topDirectory) {
+      this.context = context;
       this.changesTracker = changesTracker;
       this.pomFile = pomFile;
       this.topDirectory = topDirectory;
@@ -188,6 +194,7 @@ public class MavenBuild implements Build {
             }
          }
       }
+      context.configureUrls(extractClassPath(testCompileArgumentList.isEmpty()?compileArgumentList:testCompileArgumentList));
    }
 
    enum Mojo {
@@ -202,6 +209,16 @@ public class MavenBuild implements Build {
          }
       }
       return sourcePaths;
+   }
+
+   private List<File> extractClassPath(List<String> argumentList) {
+      List<File> classPath = new LinkedList<>();
+      for (int i=0; i<argumentList.size(); i++) {
+         if (argumentList.get(i).equals("-classpath")) {
+            classPath.addAll(splitPath(argumentList.get(i+1)));
+         }
+      }
+      return classPath;
    }
 
    private List<File> splitPath(String paths) {

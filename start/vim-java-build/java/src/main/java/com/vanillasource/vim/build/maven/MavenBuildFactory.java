@@ -8,13 +8,16 @@ package com.vanillasource.vim.build.maven;
 
 import com.vanillasource.vim.build.factory.CachingBuildFactory;
 import com.vanillasource.vim.build.Build;
+import com.vanillasource.vim.build.context.CompilationContext;
 import com.vanillasource.vim.changes.ChangesTracker;
 import java.io.File;
 
 public class MavenBuildFactory extends CachingBuildFactory {
+   private final CompilationContext context;
    private ChangesTracker changesTracker;
 
-   public MavenBuildFactory(ChangesTracker changesTracker) {
+   public MavenBuildFactory(CompilationContext context, ChangesTracker changesTracker) {
+      this.context = context;
       this.changesTracker = changesTracker;
    }
 
@@ -36,7 +39,7 @@ public class MavenBuildFactory extends CachingBuildFactory {
       if (pomFile == null) {
          return null;
       }
-      return new MavenBuild(changesTracker, pomFile, topDirectory);
+      return new MavenBuild(context, changesTracker, pomFile, topDirectory);
    }
 }
 

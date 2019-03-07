@@ -29,7 +29,7 @@ endfunction
 function! JavaBackendExec(command, parameters)
    " Assemble input
    let input = s:encodeInput(a:command, a:parameters)
-   " If channel is not establish, then establish, optionally start the engine
+   " If channel is not established, then establish, optionally start the engine
    if !exists('s:backend_channel') || ch_status(s:backend_channel) != "open"
       " Establish channel
       let s:backend_channel = ch_open("localhost:7766", {"mode":"json", "waittime":"100"})
@@ -48,7 +48,9 @@ function! JavaBackendExec(command, parameters)
       else
       endif
    endif
-   return ch_evalexpr(s:backend_channel, input)
+   let output = ch_evalexpr(s:backend_channel, input)
+   call ch_close(s:backend_channel)
+   return output
 endfunction
 
 function! JavaBackendExit()

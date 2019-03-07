@@ -4,6 +4,8 @@ if exists('g:loaded_build')
 endif
 let g:loaded_build = 1 
 
+highlight JavaQuickfixErrors ctermbg=red guibg=red
+
 function! ExecuteCompile()
    if !exists("b:BuildName")
       let b:BuildName = ''
@@ -14,6 +16,12 @@ function! ExecuteCompile()
       " command
       call JavaBackendEval('compile', {'fileName': expand('%:p') })
       do QuickFixCmdPost
+      call clearmatches()
+      for qf in getqflist()
+         if bufnr('%') == qf['bufnr']
+            call matchaddpos("JavaQuickfixErrors", [[qf['lnum'], qf['col']]])
+         endif
+      endfor
    endif
 endfunction
 

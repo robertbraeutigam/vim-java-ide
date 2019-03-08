@@ -50,7 +50,7 @@ public class CompileCommand implements Command {
          } else {
             builder.append(",");
          }
-         builder.append("{'filename':'"+message.getFile().getAbsolutePath()+"', 'type':'"+message.getSeverity().getVimIndicator()+"', 'lnum':'"+message.getRow()+"', 'col':'"+message.getColumn()+"', 'text':'"+escape(message.getMessage())+"'}");
+         builder.append("{'filename':'"+message.getFile().getAbsolutePath()+"', 'type':'"+message.getSeverity().getVimIndicator()+"', 'lnum':'"+(message.getRow()<1?1:message.getRow())+"', 'col':'"+(message.getColumn()<1?1:message.getColumn())+"', 'text':'"+escape(message.getMessage())+"'}");
       }
       builder.append("], 'r')");
       return builder.toString();

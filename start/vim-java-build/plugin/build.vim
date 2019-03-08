@@ -33,11 +33,12 @@ function! QuickfixSuggestImport()
       endif
    endfor
    if quickfix['text'] != 'N/A'
-      let matches = matchlist(substitute(quickfix['text'], '\n\+$', '', ''), 'class \([A-Z]\w*\)')
+      let matches = matchlist(substitute(quickfix['text'], '\n\+$', '', ''), '\(class\|variable\) \([A-Z]\w*\)')
+      let simpleName = matches[2]
       if !empty(matches)
-         let suggestions = split(JavaBackendExec("suggestImport", {'simpleName': matches[1]}), ',')
+         let suggestions = split(JavaBackendExec("suggestImport", {'simpleName': simpleName}), ',')
          if empty(suggestions)
-            echo "No imports suggested for ".matches[1]
+            echo "No imports suggested for ".simpleName
          elseif len(suggestions) == 1
             call JavaAddImport(suggestions[0])
          elseif len(suggestions) > 1
@@ -45,7 +46,7 @@ function! QuickfixSuggestImport()
             call quickmenu#header('Select import')
             call quickmenu#reset()
             for suggestion in suggestions
-               call quickmenu#append(matches[1], 'call JavaAddImport("'.suggestion.'")', suggestion)
+               call quickmenu#append(simpleName, 'call JavaAddImport("'.suggestion.'")', suggestion)
             endfor
             call quickmenu#bottom(11)
          endif

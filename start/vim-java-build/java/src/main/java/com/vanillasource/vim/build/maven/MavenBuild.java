@@ -156,7 +156,7 @@ public class MavenBuild implements Build {
    private void initializeCompile() throws IOException {
       logger.info("initializing maven compile arguments...");
       changesTracker.pollChanges(pomListenerId); // Clear changes, since we get everything here
-      Process mavenCompile = Runtime.getRuntime().exec(new String[] { "mvn", "-X", "clean", "test-compile" }, null, getBuildDirectory());
+      Process mavenCompile = Runtime.getRuntime().exec(new String[] { "mvn", "-DskipTests", "-X", "clean", "test-compile" }, null, getBuildDirectory());
       BufferedReader reader = new BufferedReader(new InputStreamReader(mavenCompile.getInputStream()));
       String line = null;
       Mojo currentMojo = Mojo.Unknown;

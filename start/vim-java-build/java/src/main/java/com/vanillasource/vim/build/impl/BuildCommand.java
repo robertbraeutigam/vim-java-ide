@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 import com.vanillasource.vim.engine.Command;
-import com.vanillasource.vim.build.maven.MavenBuildFactory;
 import com.vanillasource.vim.build.*;
 import com.vanillasource.vim.changes.ChangesTracker;
 

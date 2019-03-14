@@ -12,6 +12,7 @@ import com.vanillasource.vim.build.Build;
 import com.vanillasource.vim.build.context.CompilationContext;
 import com.vanillasource.vim.changes.ChangesTracker;
 import com.vanillasource.vim.build.maven.MavenBuildFactory;
+import com.vanillasource.vim.build.gradle.GradleBuildFactory;
 import java.io.File;
 import java.util.List;
 import java.util.LinkedList;
@@ -21,6 +22,7 @@ public class BuildServiceImpl implements BuildService {
 
    public BuildServiceImpl(CompilationContext context, ChangesTracker changesTracker) {
       buildFactories.add(new MavenBuildFactory(context, changesTracker));
+      buildFactories.add(new GradleBuildFactory(context, changesTracker));
    }
 
    @Override

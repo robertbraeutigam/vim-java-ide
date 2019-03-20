@@ -8,11 +8,11 @@ package com.vanillasource.vim.build.context;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 public interface CompilationContext {
    void configureUrls(Collection<File> files);
 
-   List<String> qualifiedNamesForSimpleName(String simpleName);
+   Set<String> qualifiedNamesForSimpleName(String simpleName);
 }
 
